@@ -1,0 +1,62 @@
+// TinyGPU Demo Program - All Operations
+// Format: 32-bit hex words, one per line
+// Use: $readmemh("demo_all_ops.hex", mem);
+//
+// Instruction encoding:
+//   R-type: {op[3:0], rd[3:0], rs1[3:0], rs2[3:0], 16'h0000}
+//   I-type: {op[3:0], rd[3:0], rs1[3:0], imm16[15:0],   4'h0}
+//   HALT  : 32'h0000FFFF
+//
+// R-type hex digit positions: Oooo_DRSS_0000
+//   O = opcode nibble, D = dest reg, R = rs1, S = rs2
+// I-type hex: Oooo_DRii_iii0
+//   O = opcode, D = dest, R = rs1, iiii = 16-bit immediate (last nibble is padding)
+//
+// NOTE: I-type bit layout [31:28]=op [27:24]=rd [23:20]=rs1 [19:4]=imm16 [3:0]=0
+// So for MOV R1, 10:  op=F rd=1 rs1=0 imm=000A
+//   Hex: F1 00 00A 0 -> F100_00A0
+//
+// binary mapping:
+//   [31:28] = op  = 4 bits
+//   [27:24] = rd  = 4 bits
+//   [23:20] = rs1 = 4 bits
+//   [19:4]  = imm = 16 bits
+//   [3:0]   = 0   = 4 bits
+//
+// MOV R1, 10:
+//   op=1111 rd=0001 rs1=0000 imm=0000000000001010 pad=0000
+//   = 1111_0001_0000_0000_0000_0000_1010_0000
+//   = F100_00A0
+
+// ---- Program: Compute all operations ----
+
+// MOV R1, 10
+F100_00A0
+// MOV R2, 20
+F200_0140
+// MOV R8, 2  (shift amount)
+F800_0020
+// ADD R3 = R1 + R2 = 30
+03120000
+// SUB R4 = R2 - R1 = 10
+14210000
+// MUL R5 = R1 * R2 = 200
+25120000
+// DIV R6 = R5 / R1 = 20
+36510000
+// AND R7 = R3 & R4 = 30 & 10 = 10
+47340000
+// OR  R8 = R3 | R4 = 30 | 10 = 30
+58340000
+// XOR R9 = R3 ^ R4 = 30 ^ 10 = 20
+69340000
+// NOT RA = ~R1 = ~10 = 0xFFFFFFF5
+7A100000
+// SHL RB = R1 << R8 = 10<<2 = 40
+8B1800000
+// SHR RC = R5 >> R8 = 200>>2 = 50
+9C580000
+// MOD RD = R5 % R2 = 200%20 = 0
+DA520000
+// HALT
+0000FFFF
