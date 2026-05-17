@@ -127,7 +127,7 @@ tinygpu/
 
 ---
 
-## Simulation (Icarus Verilog — Free, Fast)
+## Simulation (Icarus Verilog)
 
 ```bash
 cd sim/
